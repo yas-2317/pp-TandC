@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DarumaKnock — サブスクをだるま落とし</title>
+  <meta name="description" content="不要なサブスクを、だるま落とし。定期課金を一覧管理して、使っていないものをひとつずつ手放すiOSアプリ。">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:        #0B1220;
+      --card:      #0F1A2F;
+      --border:    #1E335A;
+      --accent:    #3B82F6;
+      --primary:   #E6EEF9;
+      --secondary: #9FB2CC;
+      --success:   #22C55E;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--primary);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.6;
+    }
+
+    a { color: var(--accent); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+
+    /* ── NAV ── */
+    nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 20px 40px;
+      border-bottom: 1px solid var(--border);
+    }
+    .nav-logo { font-size: 1.1rem; font-weight: 700; letter-spacing: -0.02em; }
+    .nav-links { display: flex; gap: 24px; font-size: 0.9rem; color: var(--secondary); }
+    .nav-links a { color: var(--secondary); }
+    .nav-links a:hover { color: var(--primary); text-decoration: none; }
+
+    /* ── HERO ── */
+    .hero {
+      text-align: center;
+      padding: 80px 24px 60px;
+      max-width: 680px;
+      margin: 0 auto;
+    }
+    .hero-eyebrow {
+      font-size: 0.8rem;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 20px;
+    }
+    .hero h1 {
+      font-size: clamp(2rem, 5vw, 3.2rem);
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      line-height: 1.1;
+      margin-bottom: 20px;
+    }
+    .hero h1 span { color: var(--accent); }
+    .hero p {
+      font-size: 1.1rem;
+      color: var(--secondary);
+      max-width: 480px;
+      margin: 0 auto 36px;
+    }
+    .app-store-btn {
+      display: inline-block;
+      background: var(--primary);
+      color: var(--bg);
+      font-weight: 700;
+      font-size: 0.95rem;
+      padding: 14px 28px;
+      border-radius: 12px;
+      transition: opacity .15s;
+    }
+    .app-store-btn:hover { opacity: .85; text-decoration: none; }
+
+    /* ── STEPS ── */
+    .steps {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 60px 24px;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 20px;
+    }
+    .step {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 28px 24px;
+    }
+    .step-number {
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 10px;
+    }
+    .step h3 {
+      font-size: 1.05rem;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+    .step p { font-size: 0.9rem; color: var(--secondary); }
+
+    /* ── FEATURES ── */
+    .features {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 20px 24px 60px;
+    }
+    .features h2 {
+      font-size: 1.4rem;
+      font-weight: 700;
+      margin-bottom: 20px;
+      color: var(--secondary);
+      font-weight: 500;
+    }
+    .feature-list {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 12px;
+      list-style: none;
+    }
+    .feature-list li {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 16px 18px;
+      font-size: 0.9rem;
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+    }
+    .feature-list li::before {
+      content: "✓";
+      color: var(--success);
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+
+    /* ── PRICING ── */
+    .pricing {
+      max-width: 600px;
+      margin: 0 auto;
+      padding: 20px 24px 80px;
+      text-align: center;
+    }
+    .pricing h2 {
+      font-size: 1.6rem;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+    .pricing .sub { color: var(--secondary); margin-bottom: 32px; }
+    .plans {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+    .plan {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 24px;
+    }
+    .plan.featured { border-color: var(--accent); }
+    .plan-label {
+      font-size: 0.75rem;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 8px;
+    }
+    .plan-price {
+      font-size: 1.8rem;
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      margin-bottom: 4px;
+    }
+    .plan-period { font-size: 0.85rem; color: var(--secondary); }
+
+    /* ── FOOTER ── */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 28px 40px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.85rem;
+      color: var(--secondary);
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    footer a { color: var(--secondary); }
+    footer a:hover { color: var(--primary); text-decoration: none; }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <span class="nav-logo">DarumaKnock</span>
+    <div class="nav-links">
+      <a href="support.html">サポート</a>
+      <a href="privacy.html">プライバシーポリシー</a>
+    </div>
+  </nav>
+
+  <section class="hero">
+    <p class="hero-eyebrow">iOS App</p>
+    <h1>不要なサブスクを、<span>だるま落とし</span>。</h1>
+    <p>定期課金を一覧管理して、使っていないものをひとつずつ手放す。残すのは、本当に使っているものだけ。</p>
+    <a href="https://apps.apple.com/jp/app/darumaknock/id0000000000" class="app-store-btn">App Store でダウンロード</a>
+    <!-- TODO: App Store URL を正しいものに差し替える -->
+  </section>
+
+  <section class="steps">
+    <div class="step">
+      <p class="step-number">Step 1</p>
+      <h3>まず、把握する</h3>
+      <p>50以上のプリセットで即登録。金額・更新日も自動入力。</p>
+    </div>
+    <div class="step">
+      <p class="step-number">Step 2</p>
+      <h3>月1回、振り返る</h3>
+      <p>「このサブスク、使ってる？」をスワイプで確認。2分で完了。</p>
+    </div>
+    <div class="step">
+      <p class="step-number">Step 3</p>
+      <h3>不要なものを、落とす</h3>
+      <p>解約したらだるま落としのアニメーションで気持ちよく手放せる。</p>
+    </div>
+  </section>
+
+  <section class="features">
+    <h2>主な機能</h2>
+    <ul class="feature-list">
+      <li>月額・年間の合計をダッシュボードで確認</li>
+      <li>更新日が近いサブスクを通知（Pro）</li>
+      <li>50以上のサービスプリセット内蔵</li>
+      <li>使用状況を月1回スワイプレビュー</li>
+      <li>カテゴリ別に整理・絞り込み</li>
+      <li>アカウント不要、データはデバイスに保存</li>
+    </ul>
+  </section>
+
+  <section class="pricing">
+    <h2>シンプルな料金</h2>
+    <p class="sub">無料で始めて、必要になったらアップグレード。</p>
+    <div class="plans">
+      <div class="plan">
+        <p class="plan-label">無料</p>
+        <p class="plan-price">¥0</p>
+        <p class="plan-period">サブスク3件まで</p>
+      </div>
+      <div class="plan featured">
+        <p class="plan-label">Pro</p>
+        <p class="plan-price">¥300</p>
+        <p class="plan-period">/ 月（年額 ¥3,000）</p>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <span>© 2026 DarumaKnock</span>
+    <div style="display:flex; gap:20px;">
+      <a href="support.html">サポート</a>
+      <a href="privacy.html">プライバシーポリシー</a>
+    </div>
+  </footer>
+
+</body>
+</html>
