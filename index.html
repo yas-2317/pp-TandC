@@ -60,8 +60,10 @@
       font-size: clamp(2rem, 5vw, 3.2rem);
       font-weight: 800;
       letter-spacing: -0.03em;
-      line-height: 1.1;
+      line-height: 1.25;
       margin-bottom: 20px;
+      word-break: keep-all;
+      overflow-wrap: anywhere;
     }
     .hero h1 span { color: var(--accent); }
     .hero p {
@@ -69,6 +71,8 @@
       color: var(--secondary);
       max-width: 480px;
       margin: 0 auto 36px;
+      word-break: keep-all;
+      overflow-wrap: anywhere;
     }
     .app-store-btn {
       display: inline-block;
@@ -219,7 +223,7 @@
   <section class="hero">
     <p class="hero-eyebrow">iOS App</p>
     <h1>不要なサブスクを、<span>だるま落とし</span>。</h1>
-    <p>定期課金を一覧管理して、使っていないものをひとつずつ手放す。残すのは、本当に使っているものだけ。</p>
+    <p>定期課金を一覧管理して、使っていないものをひとつずつ手放す。<br>残すのは、本当に使っているものだけ。</p>
     <a href="https://apps.apple.com/jp/app/darumaknock/id0000000000" class="app-store-btn">App Store でダウンロード</a>
     <!-- TODO: App Store URL を正しいものに差し替える -->
   </section>
